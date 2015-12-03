@@ -31,9 +31,9 @@ public class GameObjectAnimator {
 
         states = new Bitmap[states_quantity];
 
-        while ( imagesLeft != states_quantity)
+        while ( imagesLeft != states_quantity )
         {
-            while ( nextBitmapX < imageWidth)
+            while ( nextBitmapX < imageWidth && imagesLeft != states_quantity)
             {
                 states[imagesLeft] = Bitmap.createBitmap(sprite, nextBitmapX, nextBitmapY, width, height);
                 imagesLeft++;

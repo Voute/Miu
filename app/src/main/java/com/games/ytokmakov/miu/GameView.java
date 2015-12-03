@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -13,18 +14,21 @@ import android.view.View;
  * Created by YTokmakov on 26.11.2015.
  *
  */
-public class GameView extends View implements View.OnTouchListener {
+public class GameView extends View implements View.OnTouchListener
+
+{
 
     int x = 0;
     int fps = 0;
 
     Player player;
+    boolean playerDragging = false;
 
     public GameView(Context context)
     {
         super(context);
         player = GameObjectsLoader.getPlayer(getContext(), GameObjectsLoader.CLASS_MAGE);
-        setOnTouchListener(this);
+//        setOnTouchListener(this);
 
         new GameLoop(this).execute();
     }
@@ -38,7 +42,9 @@ public class GameView extends View implements View.OnTouchListener {
     protected void onDraw(Canvas canvas) {
 
 
-        drawGameObject(player, canvas);
+//        drawGameObject(player, canvas);
+
+        player.draw(canvas);
 
         Paint textPaint = new Paint();
         textPaint.setColor(Color.GREEN);
@@ -64,6 +70,29 @@ public class GameView extends View implements View.OnTouchListener {
 
 
         return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+//        Log.d("GENERIC_EVENT", "DRAG_CLICKED" + " X: " + (int)event.getX() + " Y: " + (int)event.getY());
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            if (player.contains((int)event.getX(), (int)event.getY()))
+            {
+                playerDragging = true;
+            }
+        }  if (event.getAction() == MotionEvent.ACTION_UP)
+        {
+            if (playerDragging)
+            {
+                playerDragging = false;
+                player.setMoveTarget((int)event.getX(), (int)event.getY());
+            }
+        }
+        return true;
+//        return super.onTouchEvent(event);
     }
 
     private class GameLoop extends AsyncTask<Void, Void, Void>
@@ -145,6 +174,6 @@ public class GameView extends View implements View.OnTouchListener {
         canvas.drawBitmap(object.getCurrentBitmap(), x, y, new Paint());
         Paint greenPaint = new Paint();
         greenPaint.setColor(Color.GREEN);
-        canvas.drawCircle(x, y, object.getRadius(), greenPaint);
+//        canvas.drawCircle(object.getX(), object.getY(), object.getRadius(), greenPaint);
     }
 }

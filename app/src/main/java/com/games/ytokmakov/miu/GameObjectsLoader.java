@@ -81,7 +81,7 @@ public class GameObjectsLoader {
         options.inScaled = false;
         Bitmap playerSprite = BitmapFactory.decodeResource(context.getResources(), spriteId, options);
 
-        return new Player(playerWidth, playerHeight, playerSprite, states, 90, 90, 30);
+        return new Player(playerWidth, playerHeight, playerSprite, states, 90, 90);
     }
 
 }
