@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.DragEvent;
@@ -17,20 +18,25 @@ import android.view.View;
 public class GameView extends View implements View.OnTouchListener
 
 {
-
     int x = 0;
     int fps = 0;
 
+    int touchX = 0, touchY = 0;
+
     Player player;
     boolean playerDragging = false;
+
+    GameLoop gameLoop;
 
     public GameView(Context context)
     {
         super(context);
         player = GameObjectsLoader.getPlayer(getContext(), GameObjectsLoader.CLASS_MAGE);
-//        setOnTouchListener(this);
 
-        new GameLoop(this).execute();
+        gameLoop = new GameLoop(this);
+        gameLoop.execute();
+
+//        new GameLoop(this).execute();
     }
 
     private void setFps(int newFps)
@@ -41,10 +47,9 @@ public class GameView extends View implements View.OnTouchListener
     @Override
     protected void onDraw(Canvas canvas) {
 
-
-//        drawGameObject(player, canvas);
-
+        drawBackground(canvas);
         player.draw(canvas);
+        drawPlayerDraggingLine(canvas);
 
         Paint textPaint = new Paint();
         textPaint.setColor(Color.GREEN);
@@ -52,7 +57,6 @@ public class GameView extends View implements View.OnTouchListener
         canvas.drawText(Integer.toString(fps), getWidth()-80, getHeight()-40, textPaint);
 
         super.onDraw(canvas);
-
     }
 
     @Override
@@ -82,13 +86,22 @@ public class GameView extends View implements View.OnTouchListener
             if (player.contains((int)event.getX(), (int)event.getY()))
             {
                 playerDragging = true;
+                touchX = (int)event.getX();
+                touchY = (int)event.getY();
             }
-        }  if (event.getAction() == MotionEvent.ACTION_UP)
+        } else if (event.getAction() == MotionEvent.ACTION_UP)
         {
             if (playerDragging)
             {
                 playerDragging = false;
                 player.setMoveTarget((int)event.getX(), (int)event.getY());
+            }
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE)
+        {
+            if (playerDragging)
+            {
+                touchX = (int) event.getX();
+                touchY = (int) event.getY();
             }
         }
         return true;
@@ -150,6 +163,11 @@ public class GameView extends View implements View.OnTouchListener
             return null;
         }
 
+        public void stop()
+        {
+            gameGo = false;
+        }
+
         @Override
         protected synchronized void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
@@ -165,7 +183,6 @@ public class GameView extends View implements View.OnTouchListener
         }
     }
 
-
     private void drawGameObject(GameObject object, Canvas canvas)
     {
         int x = object.getX() - (int)(object.getWidth() / 2);
@@ -175,5 +192,52 @@ public class GameView extends View implements View.OnTouchListener
         Paint greenPaint = new Paint();
         greenPaint.setColor(Color.GREEN);
 //        canvas.drawCircle(object.getX(), object.getY(), object.getRadius(), greenPaint);
+    }
+
+    private void drawBackground(Canvas canvas)
+    {
+        Paint backPaint = new Paint();
+        backPaint.setColor(Color.GRAY);
+        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), backPaint);
+    }
+
+    private void drawPlayerDraggingLine(Canvas canvas)
+    {
+        if (playerDragging)
+        {
+            Paint linePaint = new Paint();
+            linePaint.setColor(Color.RED);
+            canvas.drawLine(player.getX(), player.getY(), touchX, touchY, linePaint);
+
+            Paint objectPlacePaint = new Paint();
+            objectPlacePaint.setColor(Color.GREEN);
+            canvas.drawCircle(touchX, touchY, player.getRadius(), objectPlacePaint);
+        }
+    }
+
+    public void pause()
+    {
+//        Log.d("STATUS_ACTIVITY", "paused " + gameLoop.getStatus().name());
+        gameLoop.stop();
+        gameLoop = null;
+    }
+
+    public void resume()
+    {
+//        gameLoop.cancel(false);
+//        gameLoop = null;
+
+        gameLoop = new GameLoop(this);
+        gameLoop.execute();
+
+//        new GameLoop(this).execute();
+
+
+//        Log.d("STATUS_ACTIVITY", "resumed" + gameLoop.getStatus().name());
+    }
+
+    public void stop()
+    {
+        Log.d("STATUS_ACTIVITY", "stopped ");
     }
 }

@@ -36,17 +36,17 @@ public class Player implements GameObject{
         targetY = newY;
 
         // вычисляем разницу точки выстрела и цели выстрела
-        int deltaX = (int) (x - newX);
-        int deltaY = (int) (y - newY);
+        float deltaX = (newX - x);
+        float deltaY = (newY - y);
         // вычисляем расстояние от точки выстрела до цели выстрела
-        float S = (float) Math.sqrt(Math.pow(deltaX,2) + Math.pow(deltaY, 2));
+        float S = (float) Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
         // вычисляем изменение по оси на кадр
         Xstep = deltaX * SPEED / S;
         Ystep = deltaY * SPEED / S;
 
         moving = true;
+        animator.doubleSpeed();
     }
-
 
     @Override
     public Bitmap getCurrentBitmap()
@@ -67,15 +67,22 @@ public class Player implements GameObject{
         {
             x = x + Xstep;
             y = y + Ystep;
+
+            int xAbs = Math.abs((int)this.x - targetX);
+            int yAbs = Math.abs((int)this.y - targetY);
+
+            if ( (xAbs == 1 || xAbs == 0) &&
+                    (yAbs == 1 || yAbs == 0)
+                    )
+            {
+                moving = false;
+                animator.normalizeSpeed();
+            }
+
         }
 
-        int x = getX() - (int)(getWidth() / 2);
-        int y = getY() - (int)(getHeight() / 2);
-
-        if (x == targetX && y == targetY)
-        {
-            moving = false;
-        }
+        int x = getX() - (getWidth() / 2);
+        int y = getY() - (getHeight() / 2);
 
         canvas.drawBitmap(getCurrentBitmap(), x, y, new Paint());
 

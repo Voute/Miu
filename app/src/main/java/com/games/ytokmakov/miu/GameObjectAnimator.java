@@ -12,7 +12,8 @@ public class GameObjectAnimator {
     int height, width;
     float currentState = 0f;
     int maxState;
-    float speed = 1f;
+    float speed = 0.7f;
+    boolean speedDoubled = false;
 
     Bitmap states[];
 
@@ -46,7 +47,8 @@ public class GameObjectAnimator {
 
     public Bitmap getCurrentState()
     {
-        currentState+=speed;
+        currentState += speed;
+
         if ( currentState >= maxState)
         {
             currentState = 0;
@@ -59,4 +61,18 @@ public class GameObjectAnimator {
     {
         speed = newSpeed;
     }
+    public void doubleSpeed()
+    {
+        if (!speedDoubled)
+        {
+            speed *= 2;
+            speedDoubled = true;
+        }
+    }
+    public void normalizeSpeed()
+    {
+        speed /= 2;
+        speedDoubled = false;
+    }
+
 }
