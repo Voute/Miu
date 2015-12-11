@@ -13,8 +13,9 @@ public interface GameObject {
     public int getHeight();
     public int getWidth();
     public int getRadius();
+    public void updatePhysics(int frames);
 
     public Bitmap getCurrentBitmap();
-    public boolean contains(int x, int y);
+    public boolean contains(float x, float y);
     public void draw(Canvas canvas);
 }

@@ -17,8 +17,8 @@ public class GameObjectAnimator {
 
     Bitmap states[];
 
-    public GameObjectAnimator(int width, int height, Bitmap sprite, int states_quantity)
-    {
+    public GameObjectAnimator(int width, int height, Bitmap sprite, int states_quantity) {
+
         int imagesLeft = 0;
         int nextBitmapX = 0;
         int nextBitmapY = 0;
@@ -32,10 +32,8 @@ public class GameObjectAnimator {
 
         states = new Bitmap[states_quantity];
 
-        while ( imagesLeft != states_quantity )
-        {
-            while ( nextBitmapX < imageWidth && imagesLeft != states_quantity)
-            {
+        while (imagesLeft != states_quantity) {
+            while (nextBitmapX < imageWidth && imagesLeft != states_quantity) {
                 states[imagesLeft] = Bitmap.createBitmap(sprite, nextBitmapX, nextBitmapY, width, height);
                 imagesLeft++;
                 nextBitmapX += width;
@@ -45,32 +43,31 @@ public class GameObjectAnimator {
         }
     }
 
-    public Bitmap getCurrentState()
-    {
+    public Bitmap getCurrentState() {
+
         currentState += speed;
 
-        if ( currentState >= maxState)
-        {
+        if (currentState >= maxState) {
             currentState = 0;
         }
-        return states[(int)currentState];
+        return states[(int) currentState];
     }
 
 
-    public void setSpeed(float newSpeed)
-    {
+    public void setSpeed(float newSpeed) {
         speed = newSpeed;
     }
-    public void doubleSpeed()
-    {
-        if (!speedDoubled)
-        {
+
+    public void doubleSpeed() {
+
+        if (!speedDoubled) {
             speed *= 2;
             speedDoubled = true;
         }
     }
-    public void normalizeSpeed()
-    {
+
+    public void normalizeSpeed() {
+
         speed /= 2;
         speedDoubled = false;
     }

@@ -15,12 +15,10 @@ import java.io.IOException;
  */
 public class GameObjectsLoader {
 
-    final static String LOG_TAG = "XML_PARSING";
-
     final static String CLASS_MAGE = "mage";
 
-    public static Player getPlayer(Context context, String player_class)
-    {
+    public static Player getPlayer(Context context, String player_class) {
+
         int playerHeight = 0, playerWidth = 0;
         int states = 0;
         String sprite_name = "";
@@ -28,24 +26,17 @@ public class GameObjectsLoader {
 
         XmlPullParser parser = context.getResources().getXml(R.xml.player_classes);
 
-        try
-        {
+        try {
 //            int event = parser.getEventType();
 
-            while ( parser.getEventType() != XmlPullParser.END_DOCUMENT )
-            {
-                switch(parser.getEventType())
-                {
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                switch (parser.getEventType()) {
                     case XmlPullParser.START_DOCUMENT:
-                        Log.d(LOG_TAG, "Doc_start");
                         break;
                     case XmlPullParser.START_TAG:
-                        if ( parser.getName().equals(player_class) )
-                        {
-                            for (int i = 0; i < parser.getAttributeCount(); i++)
-                            {
-                                switch ( parser.getAttributeName(i) )
-                                {
+                        if (parser.getName().equals(player_class)) {
+                            for (int i = 0; i < parser.getAttributeCount(); i++) {
+                                switch (parser.getAttributeName(i)) {
                                     case "height":
                                         playerHeight = Integer.decode(parser.getAttributeValue(i));
                                         break;
@@ -66,13 +57,9 @@ public class GameObjectsLoader {
                 parser.next();
 //                event = parser.getEventType();
             }
-        }
-        catch(XmlPullParserException e)
-        {
+        } catch (XmlPullParserException e) {
 
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
 
         }
 
