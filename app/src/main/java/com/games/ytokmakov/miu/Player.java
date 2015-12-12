@@ -6,10 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 /**
- * Created by YTokmakov on 27.11.2015.
+ *
  */
 
-public class Player implements GameObject {
+public class Player implements DraggableGameObject {
 
     private final int MOVE_LINE_COLOR = Color.RED;
     private final int MOVE_CIRCLE_COLOR = Color.GREEN;
@@ -35,7 +35,6 @@ public class Player implements GameObject {
         animator = new GameObjectAnimator(width, height, sprite, states);
         animator.setSpeed(0.4f);
     }
-
 
     public void setMoveTarget(int newX, int newY) {
 
@@ -68,23 +67,8 @@ public class Player implements GameObject {
     @Override
     public void draw(Canvas canvas) {
 
-        if (moving) {
-            x = x + Xstep;
-            y = y + Ystep;
-
-            int xAbs = Math.abs((int) this.x - moveTargetX);
-            int yAbs = Math.abs((int) this.y - moveTargetY);
-
-            if ((xAbs == 1 || xAbs == 0) &&
-                    (yAbs == 1 || yAbs == 0)
-                    ) {
-                moving = false;
-                animator.normalizeSpeed();
-            }
-
-        }
-
         if (moveDragging) {
+
             Paint moveLinePaint = new Paint();
             moveLinePaint.setColor(MOVE_LINE_COLOR);
             canvas.drawLine(x, y, moveLineX, moveLineY, moveLinePaint);
@@ -95,22 +79,21 @@ public class Player implements GameObject {
 
         }
 
-        int x = getX() - (getWidth() / 2);
-        int y = getY() - (getHeight() / 2);
-
-        canvas.drawBitmap(getCurrentBitmap(), x, y, new Paint());
+        canvas.drawBitmap(getCurrentBitmap(), getDrawX(), getDrawY(), new Paint());
 
     }
 
+    @Override
     public boolean focused(float x, float y) {
         if (contains(x, y)) {
-            setMoveLineCoords(x, y);
+            setDragCoords(x, y);
             return true;
         }
         return false;
     }
 
-    public void resetMoveDragging() { moveDragging = false; }
+    @Override
+    public void resetDragging() { moveDragging = false; }
 
     @Override
     public int getX() {
@@ -120,6 +103,14 @@ public class Player implements GameObject {
     @Override
     public int getY() {
         return (int) y;
+    }
+
+    private int getDrawX() {
+        return getX() - (getWidth() / 2);
+    }
+
+    private int getDrawY() {
+        return getY() - (getHeight() / 2);
     }
 
     @Override
@@ -136,11 +127,27 @@ public class Player implements GameObject {
     }
 
     @Override
-    public void updatePhysics(int frames) {
+    public void updatePhysics() {
+
+        if (moving) {
+            x = x + Xstep;
+            y = y + Ystep;
+
+            int xAbs = Math.abs((int) this.x - moveTargetX);
+            int yAbs = Math.abs((int) this.y - moveTargetY);
+
+            if ((xAbs == 1 || xAbs == 0) &&
+                    (yAbs == 1 || yAbs == 0)
+                    ) {
+                moving = false;
+                animator.normalizeSpeed();
+            }
+
+        }
 
     }
 
-    private void setMoveLineCoords(float x, float y) {
+    public void setDragCoords(float x, float y) {
         moveLineX = x;
         moveLineY = y;
         moveDragging = true;
