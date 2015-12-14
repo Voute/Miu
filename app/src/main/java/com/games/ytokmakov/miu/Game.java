@@ -23,6 +23,7 @@ public class Game {
     public Game(GameView view) {
         player = GameObjectsLoader.getPlayer(view.getContext(), GameObjectsLoader.CLASS_MAGE);
 
+        gameObjects = new ArrayList<GameObject>();
         gameObjects.add(player);
 
         gameView = view;
@@ -47,6 +48,7 @@ public class Game {
     public void setFps(int newFps) {
         this.fps = newFps;
     }
+    public int getFps() { return fps; }
 
     public ArrayList<GameObject> getGameObjects() {
         return gameObjects;
@@ -66,6 +68,7 @@ public class Game {
 
     protected boolean touchUp(MotionEvent event) {
 
+        draggingObject.setDragTarget(event.getX(), event.getY());
         draggingObject.resetDragging();
         draggingObject = null;
 
@@ -78,7 +81,7 @@ public class Game {
         if (draggingObject != null ) {
             draggingObject.setDragCoords(event.getX(), event.getY());
         }
-        return false;
+        return true;
 
     }
 

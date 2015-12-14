@@ -20,7 +20,7 @@ public class Player implements DraggableGameObject {
 
     float x, y;
     float Xstep = 0, Ystep = 0;
-    int moveTargetX, moveTargetY;
+    float moveTargetX, moveTargetY;
     int radius;
     int SPEED = 2;
 
@@ -36,7 +36,8 @@ public class Player implements DraggableGameObject {
         animator.setSpeed(0.4f);
     }
 
-    public void setMoveTarget(int newX, int newY) {
+    @Override
+    public void setDragTarget(float newX, float newY) {
 
         moveTargetX = newX;
         moveTargetY = newY;
@@ -93,7 +94,9 @@ public class Player implements DraggableGameObject {
     }
 
     @Override
-    public void resetDragging() { moveDragging = false; }
+    public void resetDragging() {
+        moveDragging = false;
+    }
 
     @Override
     public int getX() {
@@ -130,11 +133,11 @@ public class Player implements DraggableGameObject {
     public void updatePhysics() {
 
         if (moving) {
-            x = x + Xstep;
-            y = y + Ystep;
+            x += Xstep;
+            y += Ystep;
 
-            int xAbs = Math.abs((int) this.x - moveTargetX);
-            int yAbs = Math.abs((int) this.y - moveTargetY);
+            int xAbs = (int)Math.abs(this.x - moveTargetX);
+            int yAbs = (int)Math.abs(this.y - moveTargetY);
 
             if ((xAbs == 1 || xAbs == 0) &&
                     (yAbs == 1 || yAbs == 0)
@@ -142,7 +145,6 @@ public class Player implements DraggableGameObject {
                 moving = false;
                 animator.normalizeSpeed();
             }
-
         }
 
     }

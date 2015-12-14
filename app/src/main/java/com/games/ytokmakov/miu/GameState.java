@@ -21,9 +21,8 @@ public class GameState {
 
         switch (keyObject) {
             case KEY_PLAYER: return gson;
-                break;
         }
-
+        return gson;
     }
 
 }

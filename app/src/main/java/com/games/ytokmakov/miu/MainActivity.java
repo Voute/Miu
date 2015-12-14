@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
 
         super.onResume();
 
-        setContentView(gameView);
+//        setContentView(gameView);
     }
 
     @Override

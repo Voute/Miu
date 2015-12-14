@@ -8,4 +8,5 @@ public interface DraggableGameObject extends GameObject {
     public boolean focused(float x, float y);
     public void resetDragging();
     public void setDragCoords(float x, float y);
+    public void setDragTarget(float x, float y);
 }
